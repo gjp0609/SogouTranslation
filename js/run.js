@@ -1,12 +1,12 @@
 window.onload = function () {
     let script_element = document.createElement("script");
     script_element.setAttribute("type", "text/javascript");
-    script_element.setAttribute("src", "https://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js");
+    // script_element.setAttribute("src", "https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js");
     document.body.appendChild(script_element);
 
     let showIcon = document.createElement("div");
     showIcon.id = "sogouTranslateShowIcon";
-    showIcon.innerHTML = "&nbsp;译&nbsp;";
+    showIcon.innerHTML = "译";
     showIcon.style.display = 'none';
     document.body.appendChild(showIcon);
 
@@ -72,7 +72,6 @@ window.onload = function () {
         let key = "xx";
 
         translateText = translateText.trim();
-        // let src = pid + translateText + salt + key;
         let src = pid + translateText + salt + key;
         let sign = MD5(src);
         translateText = encodeURI(translateText);
