@@ -102,11 +102,11 @@ window.onload = function () {
             "&sign=" + sign;
 
         let div = `
-            <div>
+            <div style="margin: 3px">
                 <span>src:</span>
                 <span>{{src}}</span>
             </div>
-            <div>
+            <div style="margin: 3px">
                 <span>translate:</span>
                 <span>{{translate}}</span>
             </div>
@@ -126,11 +126,16 @@ window.onload = function () {
         xhr.onreadystatechange = function () {
             let d = strToJson(xhr.responseText);
             if (xhr.readyState === 4 && xhr.status === 200) {
+                if (d.query === undefined) {
+                    div = "Err: " + d.errorCode + ", See <a href='http://deepi.sogou.com/docs/fanyiDoc'>fanyiDoc</a>";
+                }
                 div = div.replace("{{src}}", d.query);
                 div = div.replace("{{translate}}", d.translation);
-                translateDiv.innerHTML = div;
-                translateDiv.style.display = 'block';
+            } else {
+                div = "ERROR";
             }
+            translateDiv.innerHTML = div;
+            translateDiv.style.display = 'block';
         };
         xhr.send(data);
     };
