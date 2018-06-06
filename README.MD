@@ -1,6 +1,7 @@
 搜狗翻译Chrome扩展插件
 ----
 支持选中文本右键菜单跳转到搜狗翻译页面
+加入划词悬浮翻译
 
 用法： 
  1. Chrome地址栏输入[chrome://extensions/](chrome://extensions/)
