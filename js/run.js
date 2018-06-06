@@ -1,37 +1,20 @@
 window.onload = function () {
-    var script_element = document.createElement("script");
+    let script_element = document.createElement("script");
     script_element.setAttribute("type", "text/javascript");
     script_element.setAttribute("src", "https://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js");
     document.body.appendChild(script_element);
 
-
-    var translateText;
-    var showIcon = document.createElement("div");
-    showIcon.innerHTML = " 译 ";
+    let showIcon = document.createElement("div");
+    showIcon.id = "sogouTranslateShowIcon";
+    showIcon.innerHTML = "&nbsp;译&nbsp;";
     showIcon.style.display = 'none';
-    showIcon.style.backgroundColor = '#FFF';
-    showIcon.style.borderWidth = '2px';
-    showIcon.style.borderStyle = 'solid';
-    showIcon.style.borderColor = '#000';
-    showIcon.style.borderRadius = '20px';
-    showIcon.style.padding = '4px';
-    showIcon.style.cursor = 'pointer';
-    showIcon.style.position = 'fixed';
-    showIcon.style.zIndex = 30000;
     document.body.appendChild(showIcon);
 
-    var translateDiv = document.createElement("div");
-    translateDiv.style.display = 'none';
-    translateDiv.style.backgroundColor = '#FFF';
-    translateDiv.style.borderWidth = '2px';
-    translateDiv.style.borderStyle = 'solid';
-    translateDiv.style.borderRadius = '10px';
-    translateDiv.style.borderColor = '#000';
-    translateDiv.style.padding = '5px';
-    translateDiv.style.cursor = 'pointer';
-    translateDiv.style.position = 'fixed';
-    translateDiv.style.zIndex = 30006;
+    let translateDiv = document.createElement("div");
+    translateDiv.id = "sogouTranslateDiv";
     document.body.appendChild(translateDiv);
+
+    let translateText;
 
     function selectText() {
         if (document.selection) {//For ie
@@ -103,11 +86,11 @@ window.onload = function () {
 
         let div = `
             <div style="margin: 3px">
-                <span>src:</span>
+                <span style="color: blueviolet">src:</span>
                 <span>{{src}}</span>
             </div>
             <div style="margin: 3px">
-                <span>translate:</span>
+                <span style="color: seagreen">translate:</span>
                 <span>{{translate}}</span>
             </div>
         `;

@@ -22,6 +22,9 @@
       "js": [
         "js/md5.js",
         "js/run.js"
+      ],
+      "css": [
+        "sty.css"
       ]
     }
   ],

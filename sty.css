@@ -1,0 +1,30 @@
+#sogouTranslateShowIcon {
+    background-color: white;
+    border: #fd6848 solid 2px;
+    border-radius: 200px;
+    color: #fd6848;
+    padding: 4px;
+    cursor: pointer;
+    position: fixed;
+    z-index: 30000;
+}
+
+#sogouTranslateShowIcon:hover {
+    background-color: #fd6848;
+    color: white;
+    animation-duration: 1s;
+}
+
+#sogouTranslateShowIcon:active {
+    border-color: white;
+}
+
+#sogouTranslateDiv {
+    display: none;
+    background-color: #FFFAF6;
+    border: #fd6848 solid 2px;
+    border-radius: 10px;
+    padding: 5px;
+    position: fixed;
+    z-index: 30001;
+}
