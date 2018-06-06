@@ -15,6 +15,7 @@ window.onload = function () {
     document.body.appendChild(translateDiv);
 
     let translateText;
+    let srcLanguage = "en";
 
     function selectText() {
         if (document.selection) {//For ie
@@ -39,9 +40,17 @@ window.onload = function () {
         }, 200);
     };
 
+    function strToJson(str) {
+        try {
+            return (new Function("return " + str))();
+        } catch (e) {
+        }
+        return str;
+    }
+
     // 跨域
     function getHttpObj() {
-        var httpobj = null;
+        let httpobj = null;
         try {
             httpobj = new ActiveXObject("Msxml2.XMLHTTP");
         }
@@ -56,34 +65,44 @@ window.onload = function () {
         return httpobj;
     }
 
+    // 获取源语言
+    function detectlanguage(src, data) {
+        let detectlanguageKey = "xxx";
+        // send
+        let xhr = getHttpObj();
+        xhr.open("post", "https://ws.detectlanguage.com/0.2/detect", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");
+        xhr.setRequestHeader("Accept", "application/json");
+        xhr.onreadystatechange = function () {
+            let d = strToJson(xhr.responseText);
+            console.log("d");
+            console.log(d);
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let langu = d.data.detections[0].language;
+                console.log("langu");
+                console.log(langu);
+                if (langu !== undefined) {
+                    if (langu === "zh") {
+                        return false;
+                    } else {
+                        srcLanguage = langu;
+                    }
+                }
+                console.log("srcLanguage");
+                console.log(srcLanguage);
+                data = data.replace("{{srcLanguage}}", srcLanguage);
+                translate(data)
+            }
+        };
+        xhr.send("q=" + src + "&key=" + detectlanguageKey);
+    }
 
-    showIcon.onclick = function (ev) {
-        ev = ev || window.event;
-        let left = ev.clientX, top = ev.clientY;
-        translateDiv.style.display = "block";
-        translateDiv.style.left = left + 'px';
-        translateDiv.style.top = top + 'px';
-
-        let salt = getSalt();
-        // 申请api
-        // let pid = "xx";
-        let pid = "xx";
-        // let key = "xx";
-        let key = "xx";
-
-        translateText = translateText.trim();
-        let src = pid + translateText + salt + key;
-        let sign = MD5(src);
-        translateText = encodeURI(translateText);
-        let data =
-            "q=" + translateText +
-            "&pid=" + pid +
-            "&to=zh-CHS" +
-            "&from=en" +
-            "&salt=" + salt +
-            "&sign=" + sign;
-
+    function translate(data) {
         let div = `
+            <div style="margin: 3px">
+                <span style="color: darkturquoise">Source Language:</span>
+                <span>{{language}}</span>
+            </div>
             <div style="margin: 3px">
                 <span style="color: blueviolet">src:</span>
                 <span>{{src}}</span>
@@ -93,12 +112,6 @@ window.onload = function () {
                 <span>{{translate}}</span>
             </div>
         `;
-
-        function strToJson(str) {
-            var json = (new Function("return " + str))();
-            return json;
-        }
-
         // send
         let xhr = getHttpObj();
         // xhr.open("post", "https://fanyi-api.baidu.com/api/trans/vip/translate", true);
@@ -107,19 +120,55 @@ window.onload = function () {
         xhr.setRequestHeader("Accept", "application/json");
         xhr.onreadystatechange = function () {
             let d = strToJson(xhr.responseText);
-            if (xhr.readyState == 4 && xhr.status == 200) {
+            if (xhr.readyState === 4 && xhr.status === 200) {
                 if (d.query === undefined) {
-                    div = "Err: " + d.errorCode + ", See <a href='http://deepi.sogou.com/docs/fanyiDoc'>fanyiDoc</a>";
+                    if (d.errorCode === undefined) {
+                        div = "Error:" + d + ", See <a href='http://deepi.sogou.com/docs/fanyiDoc'>fanyiDoc</a>";
+                    } else {
+                        div = "Err: " + d.errorCode + ", See <a href='http://deepi.sogou.com/docs/fanyiDoc'>fanyiDoc</a>";
+                    }
                 }
+                div = div.replace("{{language}}", srcLanguage);
                 div = div.replace("{{src}}", d.query);
                 div = div.replace("{{translate}}", d.translation);
-            } else if (xhr.status != 200) {
+            } else if (xhr.status !== 200) {
                 div = "ERROR：" + xhr.responseText;
             }
             translateDiv.innerHTML = div;
             translateDiv.style.display = 'block';
         };
         xhr.send(data);
+    }
+
+
+    showIcon.onclick = function (ev) {
+        console.log("Click: %o", new Date());
+        ev = ev || window.event;
+        let left = ev.clientX, top = ev.clientY;
+        translateDiv.style.display = "block";
+        translateDiv.style.left = left + 'px';
+        translateDiv.style.top = top + 'px';
+
+        let salt = getSalt();
+        // let pid = "xxx";
+        // let key = "xxx";
+        // 申请api
+        let pid = "xxx";
+        let key = "xxx";
+
+        translateText = translateText.trim();
+        let src = pid + translateText + salt + key;
+        let sign = MD5(src);
+        translateText = encodeURI(translateText);
+        let data =
+            "q=" + translateText +
+            "&pid=" + pid +
+            "&to=zh-CHS" +
+            "&from={{srcLanguage}}" +
+            "&salt=" + salt +
+            "&sign=" + sign;
+
+        detectlanguage(translateText, data);
     };
 
     showIcon.onmouseup = function (ev) {
