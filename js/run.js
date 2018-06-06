@@ -125,14 +125,14 @@ window.onload = function () {
         xhr.setRequestHeader("Accept", "application/json");
         xhr.onreadystatechange = function () {
             let d = strToJson(xhr.responseText);
-            if (xhr.readyState === 4 && xhr.status === 200) {
+            if (xhr.readyState == 4 && xhr.status == 200) {
                 if (d.query === undefined) {
                     div = "Err: " + d.errorCode + ", See <a href='http://deepi.sogou.com/docs/fanyiDoc'>fanyiDoc</a>";
                 }
                 div = div.replace("{{src}}", d.query);
                 div = div.replace("{{translate}}", d.translation);
-            } else {
-                div = "ERROR";
+            } else if (xhr.status != 200) {
+                div = "ERROR：" + xhr.responseText;
             }
             translateDiv.innerHTML = div;
             translateDiv.style.display = 'block';
