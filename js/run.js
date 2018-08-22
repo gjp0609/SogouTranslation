@@ -66,36 +66,36 @@ window.onload = function () {
     }
 
     // 获取源语言
-    function detectlanguage(src, data) {
-        let detectlanguageKey = "xxx";
-        // send
-        let xhr = getHttpObj();
-        xhr.open("post", "https://ws.detectlanguage.com/0.2/detect", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");
-        xhr.setRequestHeader("Accept", "application/json");
-        xhr.onreadystatechange = function () {
-            let d = strToJson(xhr.responseText);
-            console.log("d");
-            console.log(d);
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                let langu = d.data.detections[0].language;
-                console.log("langu");
-                console.log(langu);
-                if (langu !== undefined) {
-                    if (langu === "zh") {
-                        return false;
-                    } else {
-                        srcLanguage = langu;
-                    }
-                }
-                console.log("srcLanguage");
-                console.log(srcLanguage);
-                data = data.replace("{{srcLanguage}}", srcLanguage);
-                translate(data)
-            }
-        };
-        xhr.send("q=" + src + "&key=" + detectlanguageKey);
-    }
+    // function detectlanguage(src, data) {
+    // let detectlanguageKey = "xxx";
+    // // send
+    // let xhr = getHttpObj();
+    // xhr.open("post", "https://ws.detectlanguage.com/0.2/detect", true);
+    // xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;");
+    // xhr.setRequestHeader("Accept", "application/json");
+    // xhr.onreadystatechange = function () {
+    //     let d = strToJson(xhr.responseText);
+    //     console.log("d");
+    //     console.log(d);
+    //     if (xhr.readyState === 4 && xhr.status === 200) {
+    //         let langu = d.data.detections[0].language;
+    //         console.log("langu");
+    //         console.log(langu);
+    //         if (langu !== undefined) {
+    //             if (langu === "zh") {
+    //                 return false;
+    //             } else {
+    //                 srcLanguage = langu;
+    //             }
+    //         }
+    //         console.log("srcLanguage");
+    //         console.log(srcLanguage);
+    //         data = data.replace("{{srcLanguage}}", srcLanguage);
+    //         translate(data)
+    // }
+    // };
+    // xhr.send("q=" + src + "&key=" + detectlanguageKey);
+    // }
 
     function translate(data) {
         let div = `
@@ -146,8 +146,16 @@ window.onload = function () {
         ev = ev || window.event;
         let left = ev.clientX, top = ev.clientY;
         translateDiv.style.display = "block";
-        translateDiv.style.left = left + 'px';
-        translateDiv.style.top = top + 'px';
+        if (left > parseInt(document.body.offsetWidth) / 2) {
+            translateDiv.style.left = left - translateDiv.offsetWidth + 'px';
+        } else {
+            translateDiv.style.left = left + 'px';
+        }
+        if (top > parseInt(document.body.offsetHeight) / 2) {
+            translateDiv.style.top = top - translateDiv.offsetHeight + 'px';
+        } else {
+            translateDiv.style.top = top + 'px';
+        }
 
         let salt = getSalt();
         // let pid = "xxx";
@@ -164,11 +172,12 @@ window.onload = function () {
             "q=" + translateText +
             "&pid=" + pid +
             "&to=zh-CHS" +
-            "&from={{srcLanguage}}" +
+            "&from=en" +
             "&salt=" + salt +
             "&sign=" + sign;
 
-        detectlanguage(translateText, data);
+        translate(data)
+        // detectlanguage(translateText, data);
     };
 
     showIcon.onmouseup = function (ev) {
